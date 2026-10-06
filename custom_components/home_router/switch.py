@@ -8,6 +8,7 @@ from homeassistant.components.switch import SwitchEntity
 from homeassistant.config_entries import ConfigSubentry
 from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 
 from . import HomeRouterConfigEntry
@@ -16,6 +17,7 @@ from .const import (
     CONF_INTERNAL_IP,
     CONF_INTERNAL_PORT,
     CONF_PROTOCOL,
+    DOMAIN,
     SUBENTRY_PORT_FORWARD,
 )
 from .coordinator import HomeRouterCoordinator
@@ -56,14 +58,27 @@ class PortForwardSwitch(HomeRouterEntity, SwitchEntity):
 
     The rule is recognised on the router by its name, so the state also reflects
     changes made in the router's own web UI.
+
+    Each port forward gets its own device, linked to the router. Home Assistant's
+    integration page lists a device under whichever subentry it belongs to, so a
+    switch on the router's own device would drag the restart button and sensor out
+    of sight under the port forward.
     """
 
     _attr_translation_key = "port_forward"
+    _attr_name = None
 
     def __init__(self, coordinator: HomeRouterCoordinator, subentry: ConfigSubentry) -> None:
         super().__init__(coordinator, subentry.subentry_id)
         self.forward = forward_from_subentry(dict(subentry.data))
-        self._attr_name = subentry.title
+        entry_id = coordinator.config_entry.entry_id
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, f"{entry_id}_{subentry.subentry_id}")},
+            name=subentry.title,
+            model="Port forward",
+            entry_type=DeviceEntryType.SERVICE,
+            via_device=(DOMAIN, entry_id),
+        )
 
     def _live(self) -> list[PortForward]:
         """Rules on the router carrying this switch's name (two for tcp+udp)."""

@@ -46,7 +46,8 @@ Go to **Settings → Devices & services → Home Router**. On the router's entry
 | External (WAN) port | Defaults to the internal port. |
 | Protocol | TCP, UDP, or both. |
 
-Each rule gets a switch. **On** creates it on the router, **off** deletes it. The
+Each rule gets a switch, on a small device of its own that is linked to the router.
+**On** creates the rule on the router, **off** deletes it. The
 switch reads the router's actual state, matching rules by name, so a rule created or
 deleted in the router's web UI shows up too. If a rule with that name forwards
 somewhere other than the definition says, the switch's `mismatch` attribute is `true`.

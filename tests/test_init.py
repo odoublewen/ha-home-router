@@ -7,6 +7,8 @@ from homeassistant.config_entries import ConfigEntryState, ConfigSubentryData
 from homeassistant.const import CONF_NAME, STATE_OFF, STATE_ON, STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import (
     MockConfigEntry,
@@ -27,7 +29,7 @@ from custom_components.home_router.router import PortForward, Protocol, RebootWa
 
 from .conftest import ENTRY_DATA
 
-SWITCH = "switch.quantum_fiber_c5500xk_ssh"
+SWITCH = "switch.ssh"
 BUTTON = "button.quantum_fiber_c5500xk_restart"
 SENSOR = "sensor.quantum_fiber_c5500xk_port_forwards"
 
@@ -203,6 +205,52 @@ async def test_removing_the_subentry_still_works_when_router_is_unreachable(
     await hass.async_block_till_done()
     assert hass.states.get(SWITCH) is None
     assert "Could not remove port forward ssh" in caplog.text
+
+
+async def test_port_forwards_get_their_own_device(hass: HomeAssistant, router, loaded) -> None:
+    """The router device must stay off the subentries, or the UI hides it under them."""
+    devices = dr.async_get(hass)
+    entities = er.async_get(hass)
+    (subentry,) = loaded.subentries.values()
+    router_device = devices.async_get_device(identifiers={(DOMAIN, loaded.entry_id)})
+    assert router_device.config_entries_subentries == {loaded.entry_id: {None}}
+
+    switch = entities.async_get(SWITCH)
+    assert switch.config_subentry_id == subentry.subentry_id
+    forward_device = devices.async_get(switch.device_id)
+    assert forward_device.id != router_device.id
+    assert forward_device.via_device_id == router_device.id
+    assert forward_device.name == "ssh"
+    assert entities.async_get(BUTTON).device_id == router_device.id
+
+
+async def test_router_device_is_detached_from_subentries_on_setup(
+    hass: HomeAssistant, router
+) -> None:
+    """Installs from before the fix have the router device linked to each subentry."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        data=ENTRY_DATA,
+        subentries_data=[
+            ConfigSubentryData(
+                data=SSH, subentry_type=SUBENTRY_PORT_FORWARD, title="ssh", unique_id="ssh"
+            )
+        ],
+    )
+    entry.add_to_hass(hass)
+    (subentry,) = entry.subentries.values()
+    devices = dr.async_get(hass)
+    for subentry_id in (None, subentry.subentry_id):
+        devices.async_get_or_create(
+            config_entry_id=entry.entry_id,
+            config_subentry_id=subentry_id,
+            identifiers={(DOMAIN, entry.entry_id)},
+        )
+
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+    router_device = devices.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
+    assert router_device.config_entries_subentries == {entry.entry_id: {None}}
 
 
 # -- reboot ------------------------------------------------------------------
