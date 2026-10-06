@@ -2,7 +2,7 @@
 
 from typing import Final
 
-DOMAIN: Final = "home_router"
+DOMAIN: Final = "tidy_home_router"
 
 CONF_MODEL: Final = "model"
 CONF_VERIFY_TLS: Final = "verify_tls"

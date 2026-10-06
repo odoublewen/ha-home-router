@@ -2,8 +2,8 @@
 
 import pytest
 
-from custom_components.home_router.router.errors import RouterError
-from custom_components.home_router.router.models import PortForward, Protocol, validate_port
+from custom_components.tidy_home_router.router.errors import RouterError
+from custom_components.tidy_home_router.router.models import PortForward, Protocol, validate_port
 
 
 async def test_valid_forward():

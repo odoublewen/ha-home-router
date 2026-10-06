@@ -16,7 +16,7 @@ from pytest_homeassistant_custom_component.common import (
     async_fire_time_changed,
 )
 
-from custom_components.home_router.const import (
+from custom_components.tidy_home_router.const import (
     CONF_EXTERNAL_PORT,
     CONF_INTERNAL_IP,
     CONF_INTERNAL_PORT,
@@ -25,7 +25,7 @@ from custom_components.home_router.const import (
     EVENT_REBOOT_FINISHED,
     SUBENTRY_PORT_FORWARD,
 )
-from custom_components.home_router.router import PortForward, Protocol, RebootWait
+from custom_components.tidy_home_router.router import PortForward, Protocol, RebootWait
 
 from .conftest import ENTRY_DATA
 
@@ -222,35 +222,6 @@ async def test_port_forwards_get_their_own_device(hass: HomeAssistant, router, l
     assert forward_device.via_device_id == router_device.id
     assert forward_device.name == "ssh"
     assert entities.async_get(BUTTON).device_id == router_device.id
-
-
-async def test_router_device_is_detached_from_subentries_on_setup(
-    hass: HomeAssistant, router
-) -> None:
-    """Installs from before the fix have the router device linked to each subentry."""
-    entry = MockConfigEntry(
-        domain=DOMAIN,
-        data=ENTRY_DATA,
-        subentries_data=[
-            ConfigSubentryData(
-                data=SSH, subentry_type=SUBENTRY_PORT_FORWARD, title="ssh", unique_id="ssh"
-            )
-        ],
-    )
-    entry.add_to_hass(hass)
-    (subentry,) = entry.subentries.values()
-    devices = dr.async_get(hass)
-    for subentry_id in (None, subentry.subentry_id):
-        devices.async_get_or_create(
-            config_entry_id=entry.entry_id,
-            config_subentry_id=subentry_id,
-            identifiers={(DOMAIN, entry.entry_id)},
-        )
-
-    assert await hass.config_entries.async_setup(entry.entry_id)
-    await hass.async_block_till_done()
-    router_device = devices.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
-    assert router_device.config_entries_subentries == {entry.entry_id: {None}}
 
 
 # -- reboot ------------------------------------------------------------------

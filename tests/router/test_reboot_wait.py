@@ -13,9 +13,9 @@ import ssl
 import httpx
 import pytest
 
-from custom_components.home_router.router import base
-from custom_components.home_router.router.base import Router
-from custom_components.home_router.router.models import RebootWait, RouterConfig
+from custom_components.tidy_home_router.router import base
+from custom_components.tidy_home_router.router.base import Router
+from custom_components.tidy_home_router.router.models import RebootWait, RouterConfig
 
 
 class FakeClock:

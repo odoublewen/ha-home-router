@@ -5,9 +5,12 @@ import ssl
 import httpx
 import pytest
 
-from custom_components.home_router.router.errors import AuthError, DeviceError, RouterError
-from custom_components.home_router.router.models import PortForward, Protocol, RouterConfig
-from custom_components.home_router.router.quantum_c5500xk import QuantumC5500XK, validate_rule_name
+from custom_components.tidy_home_router.router.errors import AuthError, DeviceError, RouterError
+from custom_components.tidy_home_router.router.models import PortForward, Protocol, RouterConfig
+from custom_components.tidy_home_router.router.quantum_c5500xk import (
+    QuantumC5500XK,
+    validate_rule_name,
+)
 
 
 def port_mapping_payload(*instances):

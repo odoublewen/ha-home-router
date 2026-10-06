@@ -24,7 +24,7 @@ class RebootButton(HomeRouterEntity, ButtonEntity):
     """Reboots the router.
 
     Pressing returns as soon as the router accepts the command. The outcome arrives
-    later as a ``home_router_reboot_finished`` event, about two minutes on.
+    later as a ``tidy_home_router_reboot_finished`` event, about two minutes on.
     """
 
     _attr_device_class = ButtonDeviceClass.RESTART

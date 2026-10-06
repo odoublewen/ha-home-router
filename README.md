@@ -1,10 +1,10 @@
-# Home Router
+# Tidy Home Router
 
 A Home Assistant integration for controlling a home router: port forwards you define
 ahead of time become switches, and the router gets a restart button.
 
 Today it supports one model, the **Quantum Fiber C5500XK**, but the device logic sits
-behind a `Router` interface (`custom_components/home_router/router/`) so other models
+behind a `Router` interface (`custom_components/tidy_home_router/router/`) so other models
 can be added later.
 
 It talks to the router's CGI API directly over HTTP, the same way the router's own web
@@ -14,12 +14,12 @@ UI does. Nothing runs on the router.
 
 Through [HACS](https://hacs.xyz):
 
-1. HACS → ⋮ → **Custom repositories** → add `https://github.com/odoublewen/ha-home-router`
+1. HACS → ⋮ → **Custom repositories** → add `https://github.com/odoublewen/ha-tidy-home-router`
    with type **Integration**.
-2. Install **Home Router**, then restart Home Assistant.
-3. **Settings → Devices & services → Add integration → Home Router**.
+2. Install **Tidy Home Router**, then restart Home Assistant.
+3. **Settings → Devices & services → Add integration → Tidy Home Router**.
 
-Or by hand: copy `custom_components/home_router` into your Home Assistant
+Or by hand: copy `custom_components/tidy_home_router` into your Home Assistant
 `config/custom_components/` and restart.
 
 Requires Home Assistant 2025.10 or newer.
@@ -36,7 +36,7 @@ Under **Configure** you can change how often the router is polled (default 60 se
 
 ## Port forwards
 
-Go to **Settings → Devices & services → Home Router**. On the router's entry, open the
+Go to **Settings → Devices & services → Tidy Home Router**. On the router's entry, open the
 **⋮** menu and choose **Add port forward** to define a rule:
 
 | Field | |
@@ -74,7 +74,7 @@ attribute lists them.
 
 The **Restart** button returns as soon as the router accepts the command. The
 integration then watches the router go offline and come back, and fires a
-`home_router_reboot_finished` event whose `result` is one of:
+`tidy_home_router_reboot_finished` event whose `result` is one of:
 
 | `result` | Meaning |
 | --- | --- |
@@ -97,7 +97,7 @@ router is down.
 
 ## Clearing every port forward
 
-The `home_router.clear_port_forwards` action deletes every rule on the router,
+The `tidy_home_router.clear_port_forwards` action deletes every rule on the router,
 including ones Home Assistant doesn't manage, and responds with `{"removed": <count>}`.
 `config_entry_id` picks the router, and can be left out when only one is set up.
 
@@ -113,7 +113,7 @@ automation:
       - trigger: time
         at: "03:00:00"
     actions:
-      - action: home_router.clear_port_forwards
+      - action: tidy_home_router.clear_port_forwards
       - action: button.press
         target:
           entity_id: button.quantum_fiber_c5500xk_restart

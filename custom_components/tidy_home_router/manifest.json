@@ -1,0 +1,13 @@
+{
+  "domain": "tidy_home_router",
+  "name": "Tidy Home Router",
+  "codeowners": ["@odoublewen"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/odoublewen/ha-tidy-home-router",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/odoublewen/ha-tidy-home-router/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

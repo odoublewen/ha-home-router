@@ -1,5 +1,5 @@
 [project]
-name = "ha-home-router"
+name = "ha-tidy-home-router"
 version = "0.1.0"
 description = "Home Assistant integration for home routers: port forwarding switches and reboot."
 readme = "README.md"

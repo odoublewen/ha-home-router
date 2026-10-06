@@ -1085,7 +1085,7 @@ wheels = [
 ]
 
 [[package]]
-name = "ha-home-router"
+name = "ha-tidy-home-router"
 version = "0.1.0"
 source = { virtual = "." }
 

@@ -9,8 +9,8 @@ import pytest
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.home_router.const import CONF_MODEL, CONF_VERIFY_TLS, DOMAIN
-from custom_components.home_router.router import (
+from custom_components.tidy_home_router.const import CONF_MODEL, CONF_VERIFY_TLS, DOMAIN
+from custom_components.tidy_home_router.router import (
     AuthError,
     DeviceError,
     PortForward,
@@ -19,7 +19,7 @@ from custom_components.home_router.router import (
     Router,
     RouterConfig,
 )
-from custom_components.home_router.router.quantum_c5500xk import QuantumC5500XK
+from custom_components.tidy_home_router.router.quantum_c5500xk import QuantumC5500XK
 
 ENTRY_DATA = {
     CONF_HOST: "192.168.1.1",
@@ -124,8 +124,8 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 def router() -> FakeRouter:
     fake = FakeRouter()
     with (
-        patch("custom_components.home_router.create_router", return_value=fake),
-        patch("custom_components.home_router.config_flow.create_router", return_value=fake),
+        patch("custom_components.tidy_home_router.create_router", return_value=fake),
+        patch("custom_components.tidy_home_router.config_flow.create_router", return_value=fake),
     ):
         yield fake
 

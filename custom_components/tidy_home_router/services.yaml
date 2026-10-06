@@ -4,4 +4,4 @@ clear_port_forwards:
       required: false
       selector:
         config_entry:
-          integration: home_router
+          integration: tidy_home_router

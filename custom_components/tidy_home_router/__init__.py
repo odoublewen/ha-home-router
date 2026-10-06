@@ -1,4 +1,4 @@
-"""Home Router: port forwarding switches and a reboot button for home routers."""
+"""Tidy Home Router: port forwarding switches and a reboot button for home routers."""
 
 from __future__ import annotations
 
@@ -19,7 +19,6 @@ from homeassistant.exceptions import (
     ServiceValidationError,
 )
 from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.ssl import get_default_context, get_default_no_verify_context
 
@@ -111,29 +110,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: HomeRouterConfigEntry) -
     entry.runtime_data = coordinator
     coordinator.port_forward_names = _port_forward_names(entry)
     entry.async_on_unload(entry.add_update_listener(_async_entry_updated))
-    _detach_router_device_from_subentries(hass, entry)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
-
-
-def _detach_router_device_from_subentries(
-    hass: HomeAssistant, entry: HomeRouterConfigEntry
-) -> None:
-    """Undo 0.1.0-dev, which put port-forward switches on the router's device.
-
-    That linked the router device to each port-forward subentry, and the integration
-    page then listed it under the subentry, hiding the restart button.
-    """
-    registry = dr.async_get(hass)
-    device = registry.async_get_device(identifiers={(DOMAIN, entry.entry_id)})
-    if device is None:
-        return
-    for subentry_id in device.config_entries_subentries.get(entry.entry_id, set()) - {None}:
-        registry.async_update_device(
-            device.id,
-            remove_config_entry_id=entry.entry_id,
-            remove_config_subentry_id=subentry_id,
-        )
 
 
 def _port_forward_names(entry: HomeRouterConfigEntry) -> dict[str, str]:

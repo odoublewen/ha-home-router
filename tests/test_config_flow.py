@@ -7,7 +7,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.home_router.const import (
+from custom_components.tidy_home_router.const import (
     CONF_EXTERNAL_PORT,
     CONF_INTERNAL_IP,
     CONF_INTERNAL_PORT,
@@ -15,7 +15,7 @@ from custom_components.home_router.const import (
     DOMAIN,
     SUBENTRY_PORT_FORWARD,
 )
-from custom_components.home_router.router import PortForward
+from custom_components.tidy_home_router.router import PortForward
 
 from .conftest import ENTRY_DATA
 
