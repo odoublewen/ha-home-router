@@ -9,6 +9,18 @@ from .const import DOMAIN
 from .coordinator import HomeRouterCoordinator
 
 
+def router_device_info(coordinator: HomeRouterCoordinator) -> DeviceInfo:
+    """The router's device, which the port-forward devices link to."""
+    router = coordinator.router
+    return DeviceInfo(
+        identifiers={(DOMAIN, coordinator.config_entry.entry_id)},
+        name=router.display_name,
+        manufacturer=router.manufacturer,
+        model=router.model_name,
+        configuration_url=router.config.base_url,
+    )
+
+
 class HomeRouterEntity(CoordinatorEntity[HomeRouterCoordinator]):
     """An entity on the router's device."""
 
@@ -16,13 +28,5 @@ class HomeRouterEntity(CoordinatorEntity[HomeRouterCoordinator]):
 
     def __init__(self, coordinator: HomeRouterCoordinator, key: str) -> None:
         super().__init__(coordinator)
-        entry = coordinator.config_entry
-        router = coordinator.router
-        self._attr_unique_id = f"{entry.entry_id}_{key}"
-        self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, entry.entry_id)},
-            name=router.display_name,
-            manufacturer=router.manufacturer,
-            model=router.model_name,
-            configuration_url=router.config.base_url,
-        )
+        self._attr_unique_id = f"{coordinator.config_entry.entry_id}_{key}"
+        self._attr_device_info = router_device_info(coordinator)

@@ -19,6 +19,7 @@ from homeassistant.exceptions import (
     ServiceValidationError,
 )
 from homeassistant.helpers import config_validation as cv
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.ssl import get_default_context, get_default_no_verify_context
 
@@ -31,6 +32,7 @@ from .const import (
     SUBENTRY_PORT_FORWARD,
 )
 from .coordinator import HomeRouterCoordinator
+from .entity import router_device_info
 from .router import AuthError, DeviceError, Router, RouterConfig, RouterError, get_device
 
 _LOGGER = logging.getLogger(__name__)
@@ -110,6 +112,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: HomeRouterConfigEntry) -
     entry.runtime_data = coordinator
     coordinator.port_forward_names = _port_forward_names(entry)
     entry.async_on_unload(entry.add_update_listener(_async_entry_updated))
+    # Platforms set up concurrently; the router device must exist before any
+    # port-forward device names it as via_device, or the link is silently dropped.
+    dr.async_get(hass).async_get_or_create(
+        config_entry_id=entry.entry_id, **router_device_info(coordinator)
+    )
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
