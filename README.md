@@ -36,7 +36,8 @@ Under **Configure** you can change how often the router is polled (default 60 se
 
 ## Port forwards
 
-On the integration's page, **Add port forward** defines a rule:
+Go to **Settings → Devices & services → Home Router**. On the router's entry, open the
+**⋮** menu and choose **Add port forward** to define a rule:
 
 | Field | |
 | --- | --- |
