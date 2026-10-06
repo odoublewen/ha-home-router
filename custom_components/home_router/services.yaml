@@ -1,0 +1,7 @@
+clear_port_forwards:
+  fields:
+    config_entry_id:
+      required: false
+      selector:
+        config_entry:
+          integration: home_router

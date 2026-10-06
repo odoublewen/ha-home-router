@@ -1,0 +1,118 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to your router",
+        "description": "Home Assistant logs in to the router's admin interface the same way its web UI does.",
+        "data": {
+          "host": "Host",
+          "username": "Username",
+          "password": "Admin password",
+          "model": "Router model",
+          "verify_tls": "Verify TLS certificate"
+        },
+        "data_description": {
+          "host": "Address of the router's admin page, e.g. 192.168.1.1.",
+          "verify_tls": "Leave off unless you have replaced the router's self-signed certificate."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Router password changed",
+        "description": "The router at {host} rejected the password for {username}. Enter the current one.",
+        "data": { "password": "Admin password" }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the router.",
+      "invalid_auth": "The router rejected the username or password.",
+      "unknown": "Unexpected error; see the log."
+    },
+    "abort": {
+      "already_configured": "This router is already set up.",
+      "reauth_successful": "Password updated."
+    }
+  },
+  "config_subentries": {
+    "port_forward": {
+      "initiate_flow": {
+        "user": "Add port forward"
+      },
+      "entry_type": "Port forward",
+      "step": {
+        "user": {
+          "title": "Add a port forward",
+          "description": "Defines a rule that a switch creates on the router when turned on and deletes when turned off. Traffic from any source address is forwarded.",
+          "data": {
+            "name": "Name",
+            "internal_ip": "Internal IP address",
+            "internal_port": "Internal port",
+            "external_port": "External (WAN) port",
+            "protocol": "Protocol"
+          },
+          "data_description": {
+            "name": "Stored on the router as the rule's description. Letters, digits, '.', '-' and '_' only.",
+            "external_port": "Defaults to the internal port."
+          }
+        },
+        "reconfigure": {
+          "title": "Edit port forward",
+          "data": {
+            "name": "Name",
+            "internal_ip": "Internal IP address",
+            "internal_port": "Internal port",
+            "external_port": "External (WAN) port",
+            "protocol": "Protocol"
+          },
+          "data_description": {
+            "name": "Stored on the router as the rule's description. Letters, digits, '.', '-' and '_' only.",
+            "external_port": "Defaults to the internal port."
+          }
+        }
+      },
+      "error": {
+        "invalid_name": "Use only letters, digits, '.', '-' and '_'.",
+        "name_exists": "Another port forward already has this name.",
+        "invalid_ip": "Enter an IPv4 address, e.g. 192.168.1.50."
+      },
+      "abort": {
+        "rule_active": "This port forward is switched on. Turn it off before editing it.",
+        "reconfigure_successful": "Port forward updated."
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "data": { "scan_interval": "Polling interval" },
+        "data_description": {
+          "scan_interval": "How often to read the router's port forwards."
+        }
+      }
+    }
+  },
+  "selector": {
+    "protocol": {
+      "options": { "tcp": "TCP", "udp": "UDP", "both": "TCP and UDP" }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "port_forwards": { "name": "Port forwards" }
+    },
+    "switch": {
+      "port_forward": { "name": "Port forward" }
+    }
+  },
+  "services": {
+    "clear_port_forwards": {
+      "name": "Clear port forwards",
+      "description": "Deletes every port forward on the router, including ones created outside Home Assistant.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Router",
+          "description": "Which router to clear. May be left out when only one is set up."
+        }
+      }
+    }
+  }
+}

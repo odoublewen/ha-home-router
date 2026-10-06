@@ -1,0 +1,28 @@
+[project]
+name = "ha-home-router"
+version = "0.1.0"
+description = "Home Assistant integration for home routers: port forwarding switches and reboot."
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Owen Solberg" }]
+requires-python = ">=3.13.2"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest-homeassistant-custom-component==0.13.286",
+    "ruff>=0.6",
+    # aiodns 3.5 (pinned by HA 2025.10) breaks on pycares 5.
+    "pycares<5",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

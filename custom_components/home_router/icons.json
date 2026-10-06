@@ -1,0 +1,16 @@
+{
+  "entity": {
+    "sensor": {
+      "port_forwards": { "default": "mdi:router-network" }
+    },
+    "switch": {
+      "port_forward": {
+        "default": "mdi:lan-disconnect",
+        "state": { "on": "mdi:lan-connect" }
+      }
+    }
+  },
+  "services": {
+    "clear_port_forwards": { "service": "mdi:broom" }
+  }
+}
